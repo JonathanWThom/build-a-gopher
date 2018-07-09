@@ -9,10 +9,16 @@ type Person struct {
 }
 
 func main() {
-	p := Person{"Jonathan", "Thom", 28}
-	fmt.Printf("The person %s %s is %v", p.FirstName, p.LastName, p.Age)
+	j := Person{"Jonathan", "Thom", 28}
+	l := Person{"Laura", "Syvertson", 28}
+
+	people := []Person{j, l}
+	e := Person{"Ernie", "The Dog", 8}
+	people = append(people, e)
+
+	fmt.Println(people)
 }
 
 // go build
-// ./jonathan
-// The person Jonathan Thom is 28
+// ./build-a-gopher
+// [{Jonathan Thom 28} {Laura Syvertson 28} {Ernie The Dog 8}]
