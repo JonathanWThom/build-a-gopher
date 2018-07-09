@@ -2,16 +2,17 @@ package main
 
 import "fmt"
 
-func main() {
-	firstName := "Jonathan"
-	fmt.Printf("Hello %s\n", firstName)
+type Person struct {
+	FirstName string
+	LastName  string
+	Age       int
+}
 
-	var lastName string
-	lastName = "Thom"
-	fmt.Printf("Hello %s %s\n", firstName, lastName)
+func main() {
+	p := Person{"Jonathan", "Thom", 28}
+	fmt.Printf("The person %s %s is %v", p.FirstName, p.LastName, p.Age)
 }
 
 // go build
 // ./jonathan
-// Hello Jonathan
-// Hello Jonathan Thom
+// The person Jonathan Thom is 28
