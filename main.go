@@ -17,6 +17,12 @@ func main() {
 	e := Person{"Ernie", "The Dog", 8, true}
 	people = append(people, e)
 
+	pets := totalUpPetCount(people)
+	fmt.Printf("Family pet count: %v\n\n", pets["Pet Count"])
+	fmt.Printf("Family non-pet count: %v\n\n", pets["Non Pet Count"])
+}
+
+func totalUpPetCount(people []Person) map[string]int {
 	pets := make(map[string]int)
 
 	for _, p := range people {
@@ -28,9 +34,7 @@ func main() {
 			pets["Non Pet Count"]++
 		}
 	}
-
-	fmt.Printf("Family pet count: %v\n\n", pets["Pet Count"])
-	fmt.Printf("Family non-pet count: %v\n\n", pets["Non Pet Count"])
+	return pets
 }
 
 // go build
