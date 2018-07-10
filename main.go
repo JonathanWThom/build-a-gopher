@@ -21,17 +21,17 @@ func main() {
 
 	family := Family{People: []Person{j, l, e}}
 
-	totalUpPetCount(&family)
+	family.totalUpPetCount()
 	fmt.Printf("Family pet count: %v\n\n", family.PetCount["Pet Count"])
 	fmt.Printf("Family non-pet count: %v\n\n", family.PetCount["Non Pet Count"])
+
+	family.PrintPeopleInfo()
 }
 
-func totalUpPetCount(family *Family) {
+func (family Family) totalUpPetCount() {
 	pets := make(map[string]int)
 
 	for _, p := range family.People {
-		fmt.Printf("%s %s is %v years old\n", p.FirstName, p.LastName, p.Age)
-
 		if p.IsPet == true {
 			pets["Pet Count"]++
 		} else if p.IsPet == false {
@@ -42,14 +42,22 @@ func totalUpPetCount(family *Family) {
 	family.PetCount = pets
 }
 
+func (family Family) PrintPeopleInfo() {
+	for _, p := range family.People {
+		p.PrintInfo()
+	}
+}
+
+func (p Person) PrintInfo() {
+	fmt.Printf("%s %s is %v years old\n", p.FirstName, p.LastName, p.Age)
+}
+
 // go build
 // ./build-a-gopher
+// Family pet count: 0
+
+// Family non-pet count: 0
 
 // Jonathan Thom is 28 years old
-//
 // Laura Syvertson is 28 years old
-//
 // Ernie The Dog is 8 years old
-// Family pet count: 1
-//
-// Family non-pet count: 2
