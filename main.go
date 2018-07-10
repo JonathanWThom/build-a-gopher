@@ -1,10 +1,14 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"log"
+	"net/http"
+)
 
 type Animal interface {
 	IsPet() bool
-	PrintInfo()
+	GetInfo() string
 }
 
 type Dog struct {
@@ -25,6 +29,14 @@ type Family struct {
 }
 
 func main() {
+	http.HandleFunc("/", getFamilyInfo)      // set router
+	err := http.ListenAndServe(":8000", nil) // set listen port
+	if err != nil {
+		log.Fatal("ListenAndServe: ", err)
+	}
+}
+
+func getFamilyInfo(w http.ResponseWriter, r *http.Request) {
 	j := Human{"Jonathan", "Thom", 28}
 	l := Human{"Laura", "Syvertson", 28}
 	e := Dog{"Ernie", "The Dog", 8}
@@ -32,10 +44,9 @@ func main() {
 	family := Family{Members: []Animal{j, l, e}}
 
 	family.totalUpPetCount()
-	fmt.Printf("Family pet count: %v\n\n", family.PetCount["Pet Count"])
-	fmt.Printf("Family non-pet count: %v\n\n", family.PetCount["Non Pet Count"])
-
-	family.PrintPeopleInfo()
+	fmt.Fprintf(w, "Family pet count: %v\n\n", family.PetCount["Pet Count"])
+	fmt.Fprintf(w, "Family non-pet count: %v\n\n", family.PetCount["Non Pet Count"])
+	family.PrintPeopleInfo(w)
 }
 
 func (d Dog) IsPet() bool {
@@ -60,23 +71,25 @@ func (family Family) totalUpPetCount() {
 	family.PetCount = pets
 }
 
-func (family Family) PrintPeopleInfo() {
+func (family Family) PrintPeopleInfo(w http.ResponseWriter) {
 	for _, m := range family.Members {
-		m.PrintInfo()
+		info := m.GetInfo()
+		fmt.Fprintf(w, info)
 	}
 }
 
-func (h Human) PrintInfo() {
-	fmt.Printf("%s %s is %v years old\n", h.FirstName, h.LastName, h.Age)
+func (h Human) GetInfo() string {
+	return fmt.Sprintf("%s %s is %v years old\n", h.FirstName, h.LastName, h.Age)
 }
 
-func (d Dog) PrintInfo() {
+func (d Dog) GetInfo() string {
 	dogYears := d.Age * 7
-	fmt.Printf("%s %s is %v dog years old\n", d.FirstName, d.LastName, dogYears)
+	return fmt.Sprintf("%s %s is %v dog years old\n", d.FirstName, d.LastName, dogYears)
 }
 
 // go build
 // ./build-a-gopher
+// localhost:8000
 // Family pet count: 0
 
 // Family non-pet count: 0
