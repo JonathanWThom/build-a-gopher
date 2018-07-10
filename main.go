@@ -6,30 +6,41 @@ type Person struct {
 	FirstName string
 	LastName  string
 	Age       int
+	IsPet     bool
 }
 
 func main() {
-	j := Person{"Jonathan", "Thom", 28}
-	l := Person{"Laura", "Syvertson", 28}
+	j := Person{"Jonathan", "Thom", 28, false}
+	l := Person{"Laura", "Syvertson", 28, false}
 
 	people := []Person{j, l}
-	e := Person{"Ernie", "The Dog", 8}
+	e := Person{"Ernie", "The Dog", 8, true}
 	people = append(people, e)
 
-	for i, p := range people {
+	pets := make(map[string]int)
+
+	for _, p := range people {
 		fmt.Printf("%s %s is %v years old\n", p.FirstName, p.LastName, p.Age)
-		fmt.Printf("They are number %v is this list\n\n", i)
+
+		if p.IsPet == true {
+			pets["Pet Count"]++
+		} else if p.IsPet == false {
+			pets["Non Pet Count"]++
+		}
 	}
+
+	fmt.Printf("Family pet count: %v\n\n", pets["Pet Count"])
+	fmt.Printf("Family non-pet count: %v\n\n", pets["Non Pet Count"])
 }
 
 // go build
 // ./build-a-gopher
 
 // Jonathan Thom is 28 years old
-// They are number 0 is this list
 //
 // Laura Syvertson is 28 years old
-// They are number 1 is this list
 //
 // Ernie The Dog is 8 years old
-// They are number 2 is this list
+// Family pet count: 1
+//
+// Family non-pet count: 2
