@@ -2,24 +2,34 @@ package main
 
 import "fmt"
 
-type Person struct {
+type Animal interface {
+	IsPet() bool
+	PrintInfo()
+}
+
+type Dog struct {
 	FirstName string
 	LastName  string
 	Age       int
-	IsPet     bool
+}
+
+type Human struct {
+	FirstName string
+	LastName  string
+	Age       int
 }
 
 type Family struct {
-	People   []Person
+	Members  []Animal
 	PetCount map[string]int
 }
 
 func main() {
-	j := Person{"Jonathan", "Thom", 28, false}
-	l := Person{"Laura", "Syvertson", 28, false}
-	e := Person{"Ernie", "The Dog", 8, true}
+	j := Human{"Jonathan", "Thom", 28}
+	l := Human{"Laura", "Syvertson", 28}
+	e := Dog{"Ernie", "The Dog", 8}
 
-	family := Family{People: []Person{j, l, e}}
+	family := Family{Members: []Animal{j, l, e}}
 
 	family.totalUpPetCount()
 	fmt.Printf("Family pet count: %v\n\n", family.PetCount["Pet Count"])
@@ -28,13 +38,21 @@ func main() {
 	family.PrintPeopleInfo()
 }
 
+func (d Dog) IsPet() bool {
+	return true
+}
+
+func (d Human) IsPet() bool {
+	return false
+}
+
 func (family Family) totalUpPetCount() {
 	pets := make(map[string]int)
 
-	for _, p := range family.People {
-		if p.IsPet == true {
+	for _, m := range family.Members {
+		if m.IsPet() == true {
 			pets["Pet Count"]++
-		} else if p.IsPet == false {
+		} else if m.IsPet() == false {
 			pets["Non Pet Count"]++
 		}
 	}
@@ -43,13 +61,18 @@ func (family Family) totalUpPetCount() {
 }
 
 func (family Family) PrintPeopleInfo() {
-	for _, p := range family.People {
-		p.PrintInfo()
+	for _, m := range family.Members {
+		m.PrintInfo()
 	}
 }
 
-func (p Person) PrintInfo() {
-	fmt.Printf("%s %s is %v years old\n", p.FirstName, p.LastName, p.Age)
+func (h Human) PrintInfo() {
+	fmt.Printf("%s %s is %v years old\n", h.FirstName, h.LastName, h.Age)
+}
+
+func (d Dog) PrintInfo() {
+	dogYears := d.Age * 7
+	fmt.Printf("%s %s is %v dog years old\n", d.FirstName, d.LastName, dogYears)
 }
 
 // go build
@@ -60,4 +83,4 @@ func (p Person) PrintInfo() {
 
 // Jonathan Thom is 28 years old
 // Laura Syvertson is 28 years old
-// Ernie The Dog is 8 years old
+// Ernie The Dog is 56 dog years old
