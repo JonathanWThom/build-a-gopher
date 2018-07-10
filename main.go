@@ -57,7 +57,7 @@ func (d Human) IsPet() bool {
 	return false
 }
 
-func (family Family) totalUpPetCount() {
+func (family *Family) totalUpPetCount() {
 	pets := make(map[string]int)
 
 	for _, m := range family.Members {
@@ -90,9 +90,9 @@ func (d Dog) GetInfo() string {
 // go build
 // ./build-a-gopher
 // localhost:8000
-// Family pet count: 0
+// Family pet count: 1
 
-// Family non-pet count: 0
+// Family non-pet count: 2
 
 // Jonathan Thom is 28 years old
 // Laura Syvertson is 28 years old
