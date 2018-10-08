@@ -43,10 +43,12 @@ func getFamilyInfo(w http.ResponseWriter, r *http.Request) {
 
 	family := Family{Members: []Animal{j, l, e}}
 
-	family.totalUpPetCount()
-	fmt.Fprintf(w, "Family pet count: %v\n\n", family.PetCount["Pet Count"])
-	fmt.Fprintf(w, "Family non-pet count: %v\n\n", family.PetCount["Non Pet Count"])
-	family.PrintPeopleInfo(w)
+	c := make(chan struct{})
+	c2 := make(chan struct{})
+	go family.printPetInfo(w, c)
+	go family.printPeopleInfo(w, c2)
+	<-c
+	<-c2
 }
 
 func (d Dog) IsPet() bool {
@@ -71,11 +73,19 @@ func (family *Family) totalUpPetCount() {
 	family.PetCount = pets
 }
 
-func (family Family) PrintPeopleInfo(w http.ResponseWriter) {
+func (family *Family) printPetInfo(w http.ResponseWriter, c chan struct{}) {
+	family.totalUpPetCount()
+	fmt.Fprintf(w, "Family pet count: %v\n\n", family.PetCount["Pet Count"])
+	fmt.Fprintf(w, "Family non-pet count: %v\n\n", family.PetCount["Non Pet Count"])
+	c <- struct{}{}
+}
+
+func (family Family) printPeopleInfo(w http.ResponseWriter, c2 chan struct{}) {
 	for _, m := range family.Members {
 		info := m.GetInfo()
 		fmt.Fprintf(w, info)
 	}
+	c2 <- struct{}{}
 }
 
 func (h Human) GetInfo() string {
